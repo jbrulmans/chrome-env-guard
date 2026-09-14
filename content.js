@@ -25,6 +25,14 @@
     loud: { scale: 1.5, bar: true, pill: true }
   };
 
+  /* Which edges a frame style actually paints. Leaving the top clear matters
+     because a site's own position:fixed header is laid out against the
+     viewport and cannot be pushed down by padding <html>. */
+  function frameSides(style) {
+    if (style === 'open-top') return { top: false, right: true, bottom: true, left: true };
+    return { top: true, right: true, bottom: true, left: true };
+  }
+
   function frameWidthFor(look) {
     var base = state.config.global.frameWidth;
     if (typeof base !== 'number' || base < 0) base = 4;
@@ -49,6 +57,8 @@
     var g = state.config.global;
     var look = INTENSITY[rule.intensity] || INTENSITY.normal;
     var width = frameWidthFor(look);
+    var sides = frameSides(g.frameStyle);
+    var barSide = g.barPosition === 'top' ? 'top' : 'bottom';
     var fg = self.EnvGuard.textColorFor(rule.color);
 
     var host = document.createElement('div');
@@ -59,24 +69,28 @@
     var corner = g.pillCorner || 'top-right';
     var vertical = corner.indexOf('bottom') === 0 ? 'bottom' : 'top';
     var horizontal = corner.indexOf('left') > -1 ? 'left' : 'right';
-    var pillOffset = (look.bar && vertical === 'top') ? (BAR_HEIGHT + 8) + 'px' : '10px';
+
+    function edge(side) {
+      return (sides[side] ? width : 0) + 'px';
+    }
 
     var style = document.createElement('style');
     style.textContent = [
       ':host{contain:layout style;}',
       '.frame{position:fixed;inset:0;box-sizing:border-box;pointer-events:none;',
-      'border:' + width + 'px solid ' + rule.color + ';}',
+      'border-style:solid;border-color:' + rule.color + ';',
+      'border-width:' + edge('top') + ' ' + edge('right') + ' ' + edge('bottom') + ' ' + edge('left') + ';}',
       '.corner{position:fixed;box-sizing:border-box;pointer-events:none;',
       'width:min(110px,18vmin);height:min(110px,18vmin);border:0 solid ' + rule.color + ';}',
       '.tl{top:0;left:0;border-top-width:' + width + 'px;border-left-width:' + width + 'px;}',
       '.tr{top:0;right:0;border-top-width:' + width + 'px;border-right-width:' + width + 'px;}',
       '.bl{bottom:0;left:0;border-bottom-width:' + width + 'px;border-left-width:' + width + 'px;}',
       '.br{bottom:0;right:0;border-bottom-width:' + width + 'px;border-right-width:' + width + 'px;}',
-      '.bar{position:fixed;top:0;left:0;right:0;height:' + BAR_HEIGHT + 'px;display:flex;',
+      '.bar{position:fixed;' + barSide + ':0;left:0;right:0;height:' + BAR_HEIGHT + 'px;display:flex;',
       'align-items:center;justify-content:center;gap:12px;background:' + rule.color + ';color:' + fg + ';',
       'font:600 12px/1 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;',
       'letter-spacing:.14em;text-transform:uppercase;pointer-events:none;}',
-      '.pill{position:fixed;' + vertical + ':' + pillOffset + ';' + horizontal + ':10px;',
+      '.pill{position:fixed;' + vertical + ':10px;' + horizontal + ':10px;',
       'background:' + rule.color + ';color:' + fg + ';border-radius:999px;padding:6px 12px;',
       'font:700 11px/1 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;',
       'letter-spacing:.12em;text-transform:uppercase;pointer-events:none;',
@@ -103,7 +117,9 @@
       bar.textContent = rule.label + ' \u2022 ' + location.hostname + ' \u2022 ' + rule.label;
       shadow.appendChild(bar);
     }
-    if (look.pill && g.showPill !== false) {
+    /* The bar already names the environment, so the pill would just be a
+       second copy sitting on top of the page. */
+    if (!look.bar && g.showPill !== false) {
       var pill = document.createElement('div');
       pill.className = 'pill';
       pill.textContent = rule.label;
@@ -129,14 +145,26 @@
 
     var look = INTENSITY[state.rule.intensity] || INTENSITY.normal;
     var width = frameWidthFor(look);
-    var top = look.bar ? Math.max(width, BAR_HEIGHT) : width;
-    if (width === 0 && top === 0) {
+    var sides = frameSides(g.frameStyle);
+    var barSide = g.barPosition === 'top' ? 'top' : 'bottom';
+
+    function reserve(side) {
+      if (look.bar && side === barSide) return Math.max(BAR_HEIGHT, sides[side] ? width : 0);
+      return sides[side] ? width : 0;
+    }
+
+    var top = reserve('top');
+    var right = reserve('right');
+    var bottom = reserve('bottom');
+    var left = reserve('left');
+
+    if (!(top || right || bottom || left)) {
       if (existing) existing.remove();
       return;
     }
 
     var css = 'html{box-sizing:border-box!important;padding:' +
-      top + 'px ' + width + 'px ' + width + 'px ' + width + 'px!important;}';
+      top + 'px ' + right + 'px ' + bottom + 'px ' + left + 'px!important;}';
 
     var node = existing;
     if (!node) {

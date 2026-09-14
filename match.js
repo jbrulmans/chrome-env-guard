@@ -9,8 +9,9 @@
       showPill: true,
       pillCorner: 'top-right',
       frameWidth: 4,
-      frameStyle: 'edges',
-      insetPage: false,
+      frameStyle: 'open-top',
+      barPosition: 'bottom',
+      insetPage: true,
       prefixTitle: true,
       titleTemplate: '[{label}] ',
       replaceFavicon: true
