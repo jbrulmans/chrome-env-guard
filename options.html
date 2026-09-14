@@ -78,6 +78,7 @@
       <label class="check">Frame
         <select id="frameStyle" style="width:auto">
           <option value="edges">all edges</option>
+          <option value="open-top">sides and bottom</option>
           <option value="corners">corners only</option>
         </select>
       </label>
@@ -85,11 +86,20 @@
         <input type="number" id="frameWidth" min="0" max="16" step="1" style="width:70px">
         px
       </label>
+      <label class="check">Bar
+        <select id="barPosition" style="width:auto">
+          <option value="bottom">at the bottom</option>
+          <option value="top">at the top</option>
+        </select>
+      </label>
       <label class="check"><input type="checkbox" id="insetPage"> Reserve space for the frame</label>
     </div>
     <p class="hint"><strong>Reserve space</strong> pads the page by the width of the frame, so the marker
       sits beside your content instead of on top of it. A site's own fixed headers can still slide under
       the frame, and pages built on <code>100vh</code> may gain a small scrollbar.</p>
+    <p class="hint">A site's own fixed menu bar is positioned against the viewport, so nothing can push it
+      down. If your app has one, keep the frame on <strong>sides and bottom</strong> and the bar
+      <strong>at the bottom</strong> &mdash; then the top of the page is never touched.</p>
     <p class="hint">Tab title prefix &mdash; <code>{label}</code> is replaced with the environment name,
       and any trailing space is kept. Leave empty for no prefix.</p>
     <input type="text" id="titleTemplate" placeholder="[{label}] ">
