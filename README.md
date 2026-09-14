@@ -127,18 +127,6 @@ that is the rule that actually matters.
 
 **Restore defaults** on the options page brings these back.
 
-## Icon
-
-The icon is a thick coloured frame around a dark interior — the same shape the extension
-draws on a production page. To recolour it:
-
-```sh
-python3 tools/make-icons.py --frame '#7c3aed' --fill '#17181d'
-```
-
-That rewrites `icons/icon{16,32,48,128}.png` in place. Pure standard library, so there is
-nothing to install.
-
 ## Notes
 
 - The overlay is `pointer-events: none` and lives in a shadow root, so it never intercepts
@@ -160,7 +148,6 @@ nothing to install.
 | `options.html` / `options.js` | Rule editor, import/export, URL tester |
 | `popup.html` / `popup.js` | Current-tab status, snooze, link to settings |
 | `icons/` | Toolbar and store icons (16/32/48/128) |
-| `tools/make-icons.py` | Regenerates those icons — no dependencies |
 
 ## Licence
 
