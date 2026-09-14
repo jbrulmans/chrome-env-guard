@@ -4,6 +4,7 @@
   'use strict';
 
   var HOST_ID = '__env_guard_host__';
+  var INSET_ID = '__env_guard_inset__';
   var state = {
     config: null,
     rule: null,
@@ -15,11 +16,20 @@
     ownFavicon: null
   };
 
+  var BAR_HEIGHT = 26;
+
+  /* scale multiplies the configured frame width; 0 means no frame at all. */
   var INTENSITY = {
-    subtle: { border: 0, bar: false, pill: true },
-    normal: { border: 5, bar: false, pill: true },
-    loud: { border: 8, bar: true, pill: true }
+    subtle: { scale: 0, bar: false, pill: true },
+    normal: { scale: 1, bar: false, pill: true },
+    loud: { scale: 1.5, bar: true, pill: true }
   };
+
+  function frameWidthFor(look) {
+    var base = state.config.global.frameWidth;
+    if (typeof base !== 'number' || base < 0) base = 4;
+    return Math.round(base * look.scale);
+  }
 
   function ready(fn) {
     if (document.documentElement) return fn();
@@ -38,6 +48,7 @@
     var rule = state.rule;
     var g = state.config.global;
     var look = INTENSITY[rule.intensity] || INTENSITY.normal;
+    var width = frameWidthFor(look);
     var fg = self.EnvGuard.textColorFor(rule.color);
 
     var host = document.createElement('div');
@@ -48,15 +59,21 @@
     var corner = g.pillCorner || 'top-right';
     var vertical = corner.indexOf('bottom') === 0 ? 'bottom' : 'top';
     var horizontal = corner.indexOf('left') > -1 ? 'left' : 'right';
-    var pillOffset = (look.bar && vertical === 'top') ? '34px' : '10px';
+    var pillOffset = (look.bar && vertical === 'top') ? (BAR_HEIGHT + 8) + 'px' : '10px';
 
     var style = document.createElement('style');
     style.textContent = [
       ':host{contain:layout style;}',
       '.frame{position:fixed;inset:0;box-sizing:border-box;pointer-events:none;',
-      'border:' + look.border + 'px solid ' + rule.color + ';}',
-      '.bar{position:fixed;top:0;left:0;right:0;height:26px;display:flex;align-items:center;',
-      'justify-content:center;gap:12px;background:' + rule.color + ';color:' + fg + ';',
+      'border:' + width + 'px solid ' + rule.color + ';}',
+      '.corner{position:fixed;box-sizing:border-box;pointer-events:none;',
+      'width:min(110px,18vmin);height:min(110px,18vmin);border:0 solid ' + rule.color + ';}',
+      '.tl{top:0;left:0;border-top-width:' + width + 'px;border-left-width:' + width + 'px;}',
+      '.tr{top:0;right:0;border-top-width:' + width + 'px;border-right-width:' + width + 'px;}',
+      '.bl{bottom:0;left:0;border-bottom-width:' + width + 'px;border-left-width:' + width + 'px;}',
+      '.br{bottom:0;right:0;border-bottom-width:' + width + 'px;border-right-width:' + width + 'px;}',
+      '.bar{position:fixed;top:0;left:0;right:0;height:' + BAR_HEIGHT + 'px;display:flex;',
+      'align-items:center;justify-content:center;gap:12px;background:' + rule.color + ';color:' + fg + ';',
       'font:600 12px/1 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;',
       'letter-spacing:.14em;text-transform:uppercase;pointer-events:none;}',
       '.pill{position:fixed;' + vertical + ':' + pillOffset + ';' + horizontal + ':10px;',
@@ -67,15 +84,23 @@
     ].join('');
     shadow.appendChild(style);
 
-    if (look.border > 0) {
-      var frame = document.createElement('div');
-      frame.className = 'frame';
-      shadow.appendChild(frame);
+    if (width > 0) {
+      if (g.frameStyle === 'corners') {
+        ['tl', 'tr', 'bl', 'br'].forEach(function (pos) {
+          var bracket = document.createElement('div');
+          bracket.className = 'corner ' + pos;
+          shadow.appendChild(bracket);
+        });
+      } else {
+        var frame = document.createElement('div');
+        frame.className = 'frame';
+        shadow.appendChild(frame);
+      }
     }
     if (look.bar) {
       var bar = document.createElement('div');
       bar.className = 'bar';
-      bar.textContent = rule.label + ' • ' + location.hostname + ' • ' + rule.label;
+      bar.textContent = rule.label + ' \u2022 ' + location.hostname + ' \u2022 ' + rule.label;
       shadow.appendChild(bar);
     }
     if (look.pill && g.showPill !== false) {
@@ -86,6 +111,40 @@
     }
 
     (document.body || document.documentElement).appendChild(host);
+  }
+
+  /* Optional: pad <html> by exactly as much as the overlay covers, so the
+     marker sits in reserved space instead of on top of the page. Site-level
+     position:fixed elements still use the full viewport and can slide under
+     the frame - that is a limitation of the approach, not a bug here. */
+  function applyInset() {
+    var existing = document.getElementById(INSET_ID);
+    var g = state.config.global;
+    var active = state.rule && !state.snoozed && g.insetPage === true;
+
+    if (!active) {
+      if (existing) existing.remove();
+      return;
+    }
+
+    var look = INTENSITY[state.rule.intensity] || INTENSITY.normal;
+    var width = frameWidthFor(look);
+    var top = look.bar ? Math.max(width, BAR_HEIGHT) : width;
+    if (width === 0 && top === 0) {
+      if (existing) existing.remove();
+      return;
+    }
+
+    var css = 'html{box-sizing:border-box!important;padding:' +
+      top + 'px ' + width + 'px ' + width + 'px ' + width + 'px!important;}';
+
+    var node = existing;
+    if (!node) {
+      node = document.createElement('style');
+      node.id = INSET_ID;
+    }
+    if (node.textContent !== css) node.textContent = css;
+    if (!node.isConnected) document.documentElement.appendChild(node);
   }
 
   function titlePrefix() {
@@ -202,6 +261,7 @@
     state.rule = self.EnvGuard.findRule(state.config, location.href);
     ready(function () {
       render();
+      applyInset();
       applyTitle();
       applyFavicon();
     });
@@ -225,6 +285,7 @@
     if (msg.type === 'env-guard:snooze') {
       state.snoozed = true;
       render();
+      applyInset();
       applyTitle();
       applyFavicon();
       sendResponse({ ok: true });

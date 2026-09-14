@@ -8,6 +8,9 @@
     global: {
       showPill: true,
       pillCorner: 'top-right',
+      frameWidth: 4,
+      frameStyle: 'edges',
+      insetPage: false,
       prefixTitle: true,
       titleTemplate: '[{label}] ',
       replaceFavicon: true
