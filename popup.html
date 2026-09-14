@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Env Guard</title>
+<style>
+  :root { color-scheme: light dark; --text:#16181d; --muted:#6b7280; --line:#e3e6ea; --card:#fff; }
+  @media (prefers-color-scheme: dark) { :root { --text:#e9ecf1; --muted:#98a1ae; --line:#2c313a; --card:#1c1f25; } }
+  body { width: 260px; margin: 0; padding: 14px; background: var(--card); color: var(--text);
+         font: 13px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .badge { display: inline-block; border-radius: 999px; padding: 5px 11px; font-weight: 700;
+           font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+  .host { color: var(--muted); word-break: break-all; margin: 8px 0 14px; font-size: 12px; }
+  button { font: inherit; width: 100%; padding: 7px 10px; margin-top: 6px; cursor: pointer;
+           border: 1px solid var(--line); border-radius: 8px; background: none; color: var(--text); }
+  button:hover { border-color: currentColor; }
+</style>
+</head>
+<body>
+  <div id="badge" class="badge">&hellip;</div>
+  <div class="host" id="host"></div>
+  <button id="snooze">Hide marker on this tab</button>
+  <button id="options">Settings</button>
+<script src="match.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>
