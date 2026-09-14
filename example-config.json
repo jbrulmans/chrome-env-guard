@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "global": {
+    "showPill": true,
+    "pillCorner": "top-right",
+    "prefixTitle": true,
+    "replaceFavicon": true
+  },
+  "rules": [
+    {
+      "id": "local",
+      "label": "LOCAL",
+      "color": "#16a34a",
+      "intensity": "subtle",
+      "enabled": true,
+      "patterns": [
+        "localhost",
+        "127.0.0.1",
+        "0.0.0.0",
+        "*.local/*",
+        "*.test/*"
+      ]
+    },
+    {
+      "id": "staging",
+      "label": "STAGING",
+      "color": "#f59e0b",
+      "intensity": "normal",
+      "enabled": true,
+      "patterns": [
+        "staging",
+        "sandbox"
+      ]
+    },
+    {
+      "id": "production",
+      "label": "PRODUCTION",
+      "color": "#dc2626",
+      "intensity": "loud",
+      "enabled": true,
+      "patterns": [
+        "https://app.example.com/*"
+      ]
+    }
+  ]
+}
