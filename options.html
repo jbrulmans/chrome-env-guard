@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Env Guard settings</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --text: #16181d;
+    --muted: #6b7280;
+    --line: #e3e6ea;
+    --accent: #2563eb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14161a; --card:#1c1f25; --text:#e9ecf1; --muted:#98a1ae; --line:#2c313a; --accent:#6ea8fe; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 20px 64px; background: var(--bg); color: var(--text);
+    font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 28px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 32px 0 10px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .rule-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .swatch { width: 34px; height: 34px; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: none; cursor: pointer; }
+  input[type="text"], textarea, select {
+    font: inherit; color: var(--text); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; width: 100%;
+  }
+  textarea { min-height: 76px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; }
+  .label-input { flex: 1 1 180px; font-weight: 600; }
+  .intensity { flex: 0 0 130px; width: 130px; }
+  .grow { flex: 1; }
+  label.check { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); white-space: nowrap; }
+  .hint { color: var(--muted); font-size: 12px; margin: 8px 0 4px; }
+  .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  button { font: inherit; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--text); padding: 7px 12px; cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  button.icon { padding: 5px 9px; color: var(--muted); }
+  button.danger:hover { border-color: #dc2626; color: #dc2626; }
+  .actions { display: flex; gap: 10px; align-items: center; margin-top: 22px; flex-wrap: wrap; }
+  .status { color: var(--muted); }
+  .tester { display: flex; gap: 10px; align-items: center; }
+  #testResult { font-weight: 600; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Env Guard</h1>
+  <p class="sub">Rules are checked top to bottom &mdash; the first match wins, so keep the most specific rule highest.</p>
+
+  <h2>Environments</h2>
+  <div id="rules"></div>
+  <button id="add">+ Add environment</button>
+
+  <h2>Display</h2>
+  <div class="card">
+    <div class="row">
+      <label class="check"><input type="checkbox" id="showPill"> Corner pill</label>
+      <label class="check"><input type="checkbox" id="prefixTitle"> Prefix the tab title</label>
+      <label class="check"><input type="checkbox" id="replaceFavicon"> Recolour the favicon</label>
+      <label class="check">Pill corner
+        <select id="pillCorner" style="width:auto">
+          <option value="top-right">top right</option>
+          <option value="top-left">top left</option>
+          <option value="bottom-right">bottom right</option>
+          <option value="bottom-left">bottom left</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <h2>Test a URL</h2>
+  <div class="card tester">
+    <input type="text" id="testUrl" placeholder="https://app.example.com/dashboard">
+    <span id="testResult" class="status">&mdash;</span>
+  </div>
+
+  <div class="actions">
+    <button class="primary" id="save">Save</button>
+    <span class="status" id="status"></span>
+    <span class="grow"></span>
+    <button id="export">Export JSON</button>
+    <button id="import">Import JSON</button>
+    <button class="danger" id="reset">Restore defaults</button>
+  </div>
+  <input type="file" id="file" accept="application/json" hidden>
+</div>
+<script src="match.js"></script>
+<script src="options.js"></script>
+</body>
+</html>
