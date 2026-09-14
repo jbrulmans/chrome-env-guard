@@ -9,6 +9,7 @@
       showPill: true,
       pillCorner: 'top-right',
       prefixTitle: true,
+      titleTemplate: '[{label}] ',
       replaceFavicon: true
     },
     rules: [

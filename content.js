@@ -9,7 +9,7 @@
     rule: null,
     url: location.href,
     snoozed: false,
-    titleBase: null,
+    appliedPrefix: '',
     titleObserver: null,
     faviconObserver: null,
     ownFavicon: null
@@ -88,24 +88,36 @@
     (document.body || document.documentElement).appendChild(host);
   }
 
+  function titlePrefix() {
+    var tpl = state.config.global.titleTemplate;
+    if (tpl === undefined || tpl === null) tpl = '[{label}] ';
+    return String(tpl).replace(/\{label\}/g, state.rule.label);
+  }
+
   function applyTitle() {
     if (state.titleObserver) {
       state.titleObserver.disconnect();
       state.titleObserver = null;
     }
     var wanted = state.rule && !state.snoozed && state.config.global.prefixTitle !== false;
-    var tag = wanted ? '[' + state.rule.label + '] ' : null;
+    var prefix = wanted ? titlePrefix() : '';
 
+    /* Strip the prefix we last wrote as well as the one we are about to write,
+       so changing the template does not stack prefixes on an open tab. */
     function strip(title) {
-      return String(title || '').replace(/^\[[^\]]+\]\s*/, '');
+      var t = String(title || '');
+      [state.appliedPrefix, prefix].forEach(function (p) {
+        while (p && t.indexOf(p) === 0) t = t.slice(p.length);
+      });
+      return t;
     }
     function sync() {
-      var base = strip(document.title);
-      var next = tag ? tag + base : base;
+      var next = prefix + strip(document.title);
       if (document.title !== next) document.title = next;
     }
     sync();
-    if (!tag) return;
+    state.appliedPrefix = prefix;
+    if (!prefix) return;
 
     var titleEl = document.querySelector('title');
     if (!titleEl) return;
