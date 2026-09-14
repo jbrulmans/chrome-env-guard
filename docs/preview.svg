@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1184 330" width="1184" height="330" role="img" aria-label="Three browser windows showing the local, staging and production markers">
+<g transform="translate(0,0)">
+<rect x="0" y="0" width="380" height="300" rx="10" fill="#ffffff" stroke="#d8dbe0"/>
+<path d="M0 10a10 10 0 0 1 10-10h360 a10 10 0 0 1 10 10v22 H0Z" fill="#edeff2"/>
+<rect x="10" y="6" width="200" height="26" rx="7" fill="#ffffff"/>
+<rect x="19" y="13" width="11" height="11" rx="3" fill="none" stroke="#16a34a" stroke-width="3"/>
+<text x="37" y="22" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="10" fill="#3c4149">[LOCAL] Dashboard</text>
+<rect x="0" y="32" width="380" height="26" fill="#f7f8fa"/>
+<rect x="12" y="38" width="300" height="14" rx="7" fill="#e7e9ed"/>
+<text x="22" y="48" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="9" fill="#7b818b">localhost:3000</text>
+<rect x="326" y="38" width="14" height="14" rx="4" fill="none" stroke="#16a34a" stroke-width="3"/>
+<rect x="336" y="43" width="22" height="11" rx="5" fill="#16a34a"/>
+<text x="347" y="51" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="7" font-weight="700" fill="#ffffff" text-anchor="middle">LOCA</text>
+<clipPath id="clip0"><rect x="0" y="58" width="380" height="242"/></clipPath>
+<g clip-path="url(#clip0)">
+<rect x="0" y="58" width="380" height="242" fill="#ffffff"/>
+<rect x="0" y="58" width="380" height="26" fill="#272b32"/>
+<circle cx="16" cy="71" r="4" fill="#5b616b"/>
+<rect x="34" y="68" width="34" height="6" rx="3" fill="#5b616b"/>
+<rect x="80" y="68" width="28" height="6" rx="3" fill="#5b616b"/>
+<rect x="126" y="68" width="40" height="6" rx="3" fill="#5b616b"/>
+<rect x="0" y="84" width="54" height="216" fill="#f4f5f7"/>
+<rect x="10" y="98" width="34" height="6" rx="3" fill="#d3d6db"/>
+<rect x="10" y="116" width="34" height="6" rx="3" fill="#d3d6db"/>
+<rect x="10" y="134" width="34" height="6" rx="3" fill="#d3d6db"/>
+<rect x="10" y="152" width="34" height="6" rx="3" fill="#d3d6db"/>
+<rect x="68" y="98" width="296" height="34" rx="6" fill="#f7f8fa" stroke="#e6e8ec"/>
+<rect x="80" y="110" width="90" height="6" rx="3" fill="#c9ccd2"/>
+<rect x="68" y="142" width="296" height="34" rx="6" fill="#f7f8fa" stroke="#e6e8ec"/>
+<rect x="80" y="154" width="90" height="6" rx="3" fill="#c9ccd2"/>
+<rect x="68" y="186" width="296" height="34" rx="6" fill="#f7f8fa" stroke="#e6e8ec"/>
+<rect x="80" y="198" width="90" height="6" rx="3" fill="#c9ccd2"/>
+<rect x="324" y="271" width="44" height="17" rx="8.5" fill="#16a34a"/>
+<text x="346" y="283" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="8" font-weight="700" letter-spacing="1" fill="#ffffff" text-anchor="middle">LOCAL</text>
+</g>
+<rect x="0.5" y="0.5" width="379" height="299" rx="10" fill="none" stroke="#d8dbe0"/>
+<text x="190" y="320" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#6b7280" text-anchor="middle">subtle — corner pill only</text>
+</g>
+<g transform="translate(402,0)">
+<rect x="0" y="0" width="380" height="300" rx="10" fill="#ffffff" stroke="#d8dbe0"/>
+<path d="M0 10a10 10 0 0 1 10-10h360 a10 10 0 0 1 10 10v22 H0Z" fill="#edeff2"/>
+<rect x="10" y="6" width="200" height="26" rx="7" fill="#ffffff"/>
+<rect x="19" y="13" width="11" height="11" rx="3" fill="none" stroke="#f59e0b" stroke-width="3"/>
+<text x="37" y="22" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="10" fill="#3c4149">[STAGING] Dashboard</text>
+<rect x="0" y="32" width="380" height="26" fill="#f7f8fa"/>
+<rect x="12" y="38" width="300" height="14" rx="7" fill="#e7e9ed"/>
+<text x="22" y="48" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="9" fill="#7b818b">staging.example.com</text>
+<rect x="326" y="38" width="14" height="14" rx="4" fill="none" stroke="#f59e0b" stroke-width="3"/>
+<rect x="336" y="43" width="22" height="11" rx="5" fill="#f59e0b"/>
+<text x="347" y="51" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="7" font-weight="700" fill="#ffffff" text-anchor="middle">STAG</text>
+<clipPath id="clip402"><rect x="0" y="58" width="380" height="242"/></clipPath>
+<g clip-path="url(#clip402)">
+<rect x="0" y="58" width="380" height="242" fill="#ffffff"/>
+<rect x="5" y="63" width="370" height="26" fill="#272b32"/>
+<circle cx="21" cy="76" r="4" fill="#5b616b"/>
+<rect x="39" y="73" width="34" height="6" rx="3" fill="#5b616b"/>
+<rect x="85" y="73" width="28" height="6" rx="3" fill="#5b616b"/>
+<rect x="131" y="73" width="40" height="6" rx="3" fill="#5b616b"/>
+<rect x="5" y="89" width="54" height="206" fill="#f4f5f7"/>
+<rect x="15" y="103" width="34" height="6" rx="3" fill="#d3d6db"/>
+<rect x="15" y="121" width="34" height="6" rx="3" fill="#d3d6db"/>
+<rect x="15" y="139" width="34" height="6" rx="3" fill="#d3d6db"/>
+<rect x="15" y="157" width="34" height="6" rx="3" fill="#d3d6db"/>
+<rect x="73" y="103" width="286" height="34" rx="6" fill="#f7f8fa" stroke="#e6e8ec"/>
+<rect x="85" y="115" width="90" height="6" rx="3" fill="#c9ccd2"/>
+<rect x="73" y="147" width="286" height="34" rx="6" fill="#f7f8fa" stroke="#e6e8ec"/>
+<rect x="85" y="159" width="90" height="6" rx="3" fill="#c9ccd2"/>
+<rect x="73" y="191" width="286" height="34" rx="6" fill="#f7f8fa" stroke="#e6e8ec"/>
+<rect x="85" y="203" width="90" height="6" rx="3" fill="#c9ccd2"/>
+<path d="M0 58 H380 V300 H0 Z M5 63 H375 V295 H5 Z" fill="#f59e0b" fill-rule="evenodd"/>
+<rect x="312" y="271" width="55" height="17" rx="8.5" fill="#f59e0b"/>
+<text x="340" y="283" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="8" font-weight="700" letter-spacing="1" fill="#ffffff" text-anchor="middle">STAGING</text>
+</g>
+<rect x="0.5" y="0.5" width="379" height="299" rx="10" fill="none" stroke="#d8dbe0"/>
+<text x="190" y="320" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#6b7280" text-anchor="middle">normal — pill + frame</text>
+</g>
+<g transform="translate(804,0)">
+<rect x="0" y="0" width="380" height="300" rx="10" fill="#ffffff" stroke="#d8dbe0"/>
+<path d="M0 10a10 10 0 0 1 10-10h360 a10 10 0 0 1 10 10v22 H0Z" fill="#edeff2"/>
+<rect x="10" y="6" width="200" height="26" rx="7" fill="#ffffff"/>
+<rect x="19" y="13" width="11" height="11" rx="3" fill="none" stroke="#dc2626" stroke-width="3"/>
+<text x="37" y="22" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="10" fill="#3c4149">[PRODUCTION] Dashboard</text>
+<rect x="0" y="32" width="380" height="26" fill="#f7f8fa"/>
+<rect x="12" y="38" width="300" height="14" rx="7" fill="#e7e9ed"/>
+<text x="22" y="48" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="9" fill="#7b818b">app.example.com</text>
+<rect x="326" y="38" width="14" height="14" rx="4" fill="none" stroke="#dc2626" stroke-width="3"/>
+<rect x="336" y="43" width="22" height="11" rx="5" fill="#dc2626"/>
+<text x="347" y="51" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="7" font-weight="700" fill="#ffffff" text-anchor="middle">PROD</text>
+<clipPath id="clip804"><rect x="0" y="58" width="380" height="242"/></clipPath>
+<g clip-path="url(#clip804)">
+<rect x="0" y="58" width="380" height="242" fill="#ffffff"/>
+<rect x="7" y="65" width="366" height="26" fill="#272b32"/>
+<circle cx="23" cy="78" r="4" fill="#5b616b"/>
+<rect x="41" y="75" width="34" height="6" rx="3" fill="#5b616b"/>
+<rect x="87" y="75" width="28" height="6" rx="3" fill="#5b616b"/>
+<rect x="133" y="75" width="40" height="6" rx="3" fill="#5b616b"/>
+<rect x="7" y="91" width="54" height="193" fill="#f4f5f7"/>
+<rect x="17" y="105" width="34" height="6" rx="3" fill="#d3d6db"/>
+<rect x="17" y="123" width="34" height="6" rx="3" fill="#d3d6db"/>
+<rect x="17" y="141" width="34" height="6" rx="3" fill="#d3d6db"/>
+<rect x="17" y="159" width="34" height="6" rx="3" fill="#d3d6db"/>
+<rect x="75" y="105" width="282" height="34" rx="6" fill="#f7f8fa" stroke="#e6e8ec"/>
+<rect x="87" y="117" width="90" height="6" rx="3" fill="#c9ccd2"/>
+<rect x="75" y="149" width="282" height="34" rx="6" fill="#f7f8fa" stroke="#e6e8ec"/>
+<rect x="87" y="161" width="90" height="6" rx="3" fill="#c9ccd2"/>
+<rect x="75" y="193" width="282" height="34" rx="6" fill="#f7f8fa" stroke="#e6e8ec"/>
+<rect x="87" y="205" width="90" height="6" rx="3" fill="#c9ccd2"/>
+<path d="M0 58 H380 V300 H0 Z M7 65 H373 V293 H7 Z" fill="#dc2626" fill-rule="evenodd"/>
+<rect x="0" y="284" width="380" height="16" fill="#dc2626"/>
+<text x="190" y="295" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="8" font-weight="600" letter-spacing="1.4" fill="#ffffff" text-anchor="middle">PRODUCTION &#8226; app.example.com &#8226; PRODUCTION</text>
+</g>
+<rect x="0.5" y="0.5" width="379" height="299" rx="10" fill="none" stroke="#d8dbe0"/>
+<text x="190" y="320" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#6b7280" text-anchor="middle">loud — frame + bottom bar</text>
+</g>
+</svg>

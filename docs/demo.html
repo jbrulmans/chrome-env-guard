@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Environment Guard &mdash; demo</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f7f9; --card: #fff; --text: #16181d; --muted: #6b7280;
+    --line: #e3e6ea; --accent: #2563eb; --chrome: #edeff2; --shell: #d8dbe0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14161a; --card:#1c1f25; --text:#e9ecf1; --muted:#98a1ae; --line:#2c313a; --accent:#6ea8fe; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:28px 20px 56px; background:var(--bg); color:var(--text);
+         font:14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .wrap { max-width:1080px; margin:0 auto; }
+  h1 { font-size:21px; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 24px; }
+  .layout { display:grid; grid-template-columns:262px 1fr; gap:22px; align-items:start; }
+  @media (max-width:820px) { .layout { grid-template-columns:1fr; } }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .panel h2 { font-size:11px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted);
+              margin:0 0 12px; font-weight:600; }
+  .field { margin-bottom:13px; }
+  .field > label { display:block; font-size:12px; color:var(--muted); margin-bottom:5px; }
+  select, input[type=text] { font:inherit; width:100%; padding:6px 9px; border-radius:8px;
+    border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  input[type=range] { width:100%; accent-color:var(--accent); }
+  input[type=color] { width:38px; height:30px; padding:0; border:1px solid var(--line);
+    border-radius:8px; background:none; vertical-align:middle; }
+  .check { display:flex; align-items:center; gap:7px; font-size:13px; margin-bottom:9px; }
+  .presets { display:flex; gap:6px; margin-bottom:16px; }
+  .presets button { flex:1; font:inherit; font-size:12px; padding:6px 4px; cursor:pointer;
+    border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--text); }
+  .presets button[aria-pressed=true] { border-color:currentColor; font-weight:600; }
+  .row2 { display:flex; gap:10px; align-items:center; }
+
+  /* --- mock browser --------------------------------------------------- */
+  .browser { border:1px solid var(--shell); border-radius:12px; overflow:hidden;
+             background:#fff; box-shadow:0 10px 34px rgba(0,0,0,.12); }
+  .chrome { background:var(--chrome); padding:8px 10px 0; }
+  .tabstrip { display:flex; align-items:center; gap:8px; }
+  .tab { display:flex; align-items:center; gap:7px; background:#fff; border-radius:8px 8px 0 0;
+         padding:7px 13px; font-size:11.5px; color:#3c4149; max-width:280px; }
+  .tab .fav { width:12px; height:12px; border-radius:3px; border:3px solid #dc2626; flex:0 0 auto; }
+  .tab .txt { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .toolbar { background:#f7f8fa; display:flex; align-items:center; gap:10px; padding:7px 10px;
+             border-bottom:1px solid #e6e8ec; }
+  .url { flex:1; background:#e9ebef; border-radius:8px; padding:4px 11px; font-size:11px; color:#7b818b; }
+  .exticon { width:15px; height:15px; border-radius:4px; border:3px solid #dc2626; flex:0 0 auto; }
+  .badge { font-size:8px; font-weight:700; color:#fff; background:#dc2626; border-radius:5px;
+           padding:2px 5px; letter-spacing:.04em; }
+
+  /* the page area the extension draws into */
+  .viewport { position:relative; height:396px; background:#fff; overflow:hidden; }
+  .page { position:absolute; inset:0; overflow:hidden; }        /* inset mode pads this */
+  .app { height:100%; background:#fff; display:flex; flex-direction:column; }
+  .appnav { background:#272b32; height:34px; display:flex; align-items:center; gap:16px;
+            padding:0 14px; flex:0 0 auto; }
+  .appnav .dot { width:9px; height:9px; border-radius:50%; background:#6b7280; }
+  .appnav .item { height:6px; border-radius:3px; background:#5b616b; }
+  .appbody { flex:1; display:flex; min-height:0; }
+  .side { width:76px; background:#f4f5f7; padding:14px 10px; flex:0 0 auto; }
+  .side .item { height:6px; border-radius:3px; background:#d3d6db; margin-bottom:15px; }
+  .main { flex:1; padding:14px; overflow:hidden; }
+  .card2 { border:1px solid #e6e8ec; background:#f8f9fb; border-radius:8px; height:52px;
+           margin-bottom:11px; padding:14px; }
+  .card2 .line { height:6px; border-radius:3px; background:#c9ccd2; width:60%; }
+  .card2 .line + .line { width:38%; margin-top:9px; background:#dcdfe4; }
+
+  /* extension chrome, mirroring content.js */
+  .frame { position:absolute; inset:0; box-sizing:border-box; pointer-events:none; border-style:solid; }
+  .bar { position:absolute; left:0; right:0; height:26px; display:flex; align-items:center;
+         justify-content:center; gap:12px; font:600 12px/1 ui-sans-serif,system-ui,sans-serif;
+         letter-spacing:.14em; text-transform:uppercase; pointer-events:none; }
+  .pill { position:absolute; border-radius:999px; padding:6px 12px;
+          font:700 11px/1 ui-sans-serif,system-ui,sans-serif; letter-spacing:.12em;
+          text-transform:uppercase; box-shadow:0 2px 10px rgba(0,0,0,.28); pointer-events:none; }
+  .corner { position:absolute; box-sizing:border-box; width:88px; height:88px; border:0 solid; }
+  .note { color:var(--muted); font-size:12px; margin:14px 2px 0; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Environment Guard</h1>
+  <p class="sub">A live preview of what the extension paints on a page. Change anything on the left.</p>
+
+  <div class="layout">
+    <div class="panel">
+      <h2>Environment</h2>
+      <div class="presets" id="presets">
+        <button data-preset="local">Local</button>
+        <button data-preset="staging">Staging</button>
+        <button data-preset="production" aria-pressed="true">Production</button>
+      </div>
+
+      <div class="field">
+        <label for="label">Label</label>
+        <div class="row2">
+          <input type="color" id="color" value="#dc2626">
+          <input type="text" id="label" value="PRODUCTION">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="intensity">Intensity</label>
+        <select id="intensity">
+          <option value="subtle">subtle</option>
+          <option value="normal">normal</option>
+          <option value="loud" selected>loud</option>
+        </select>
+      </div>
+
+      <h2 style="margin-top:20px">Display</h2>
+
+      <div class="field">
+        <label for="frameStyle">Frame</label>
+        <select id="frameStyle">
+          <option value="edges" selected>all edges</option>
+          <option value="open-top">sides and bottom</option>
+          <option value="corners">corners only</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="frameWidth">Thickness &mdash; <span id="widthOut">4</span>px</label>
+        <input type="range" id="frameWidth" min="0" max="16" step="1" value="4">
+      </div>
+
+      <div class="field">
+        <label for="barPosition">Bar</label>
+        <select id="barPosition">
+          <option value="bottom" selected>at the bottom</option>
+          <option value="top">at the top</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="pillCorner">Pill corner</label>
+        <select id="pillCorner">
+          <option value="top-right">top right</option>
+          <option value="top-left">top left</option>
+          <option value="bottom-right" selected>bottom right</option>
+          <option value="bottom-left">bottom left</option>
+        </select>
+      </div>
+
+      <label class="check"><input type="checkbox" id="insetPage" checked> Reserve space for the frame</label>
+      <label class="check"><input type="checkbox" id="showPill" checked> Corner pill</label>
+      <label class="check"><input type="checkbox" id="replaceFavicon" checked> Recolour the favicon</label>
+
+      <div class="field" style="margin-top:13px">
+        <label for="titleTemplate">Tab title prefix</label>
+        <input type="text" id="titleTemplate" value="[{label}] ">
+      </div>
+    </div>
+
+    <div>
+      <div class="browser">
+        <div class="chrome">
+          <div class="tabstrip">
+            <div class="tab"><span class="fav" id="fav"></span><span class="txt" id="tabTitle">[PRODUCTION] Bookings</span></div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <div class="url" id="url">https://app.example.com/bookings</div>
+          <span class="exticon" id="extIcon"></span>
+          <span class="badge" id="extBadge">PROD</span>
+        </div>
+        <div class="viewport" id="viewport">
+          <div class="page" id="page">
+            <div class="app">
+              <div class="appnav">
+                <span class="dot"></span>
+                <span class="item" style="width:44px"></span>
+                <span class="item" style="width:36px"></span>
+                <span class="item" style="width:52px"></span>
+              </div>
+              <div class="appbody">
+                <div class="side">
+                  <div class="item" style="width:80%"></div>
+                  <div class="item" style="width:60%"></div>
+                  <div class="item" style="width:74%"></div>
+                  <div class="item" style="width:52%"></div>
+                </div>
+                <div class="main">
+                  <div class="card2"><div class="line"></div><div class="line"></div></div>
+                  <div class="card2"><div class="line"></div><div class="line"></div></div>
+                  <div class="card2"><div class="line"></div><div class="line"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="note">The site's own dark navigation bar is the thing you do not want covered &mdash;
+        try <strong>Frame: sides and bottom</strong> with the bar at the bottom.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var PRESETS = {
+    local:      { label: 'LOCAL',      color: '#16a34a', intensity: 'subtle', host: 'localhost:3000',      path: '/bookings' },
+    staging:    { label: 'STAGING',    color: '#f59e0b', intensity: 'normal', host: 'staging.example.com', path: '/bookings' },
+    production: { label: 'PRODUCTION', color: '#dc2626', intensity: 'loud',   host: 'app.example.com',     path: '/bookings' }
+  };
+  var INTENSITY = {
+    subtle: { scale: 0,   bar: false },
+    normal: { scale: 1,   bar: false },
+    loud:   { scale: 1.5, bar: true  }
+  };
+  var BAR_H = 26;
+  var host = 'app.example.com';
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function textColorFor(hex) {
+    var m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(hex || '');
+    if (!m) return '#fff';
+    var h = m[1];
+    if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    var lum = [0,2,4].map(function (i) {
+      var c = parseInt(h.substr(i,2),16)/255;
+      return c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
+    });
+    lum = 0.2126*lum[0] + 0.7152*lum[1] + 0.0722*lum[2];
+    return 1.05/(lum+0.05) >= 3 ? '#ffffff' : '#111111';
+  }
+
+  function sides(style) {
+    return style === 'open-top'
+      ? { top:false, right:true, bottom:true, left:true }
+      : { top:true, right:true, bottom:true, left:true };
+  }
+
+  function render() {
+    var label = $('label').value || 'ENV';
+    var color = $('color').value;
+    var intensity = $('intensity').value;
+    var style = $('frameStyle').value;
+    var base = parseInt($('frameWidth').value, 10);
+    var barSide = $('barPosition').value;
+    var corner = $('pillCorner').value;
+    var inset = $('insetPage').checked;
+    var look = INTENSITY[intensity];
+    var width = Math.round(base * look.scale);
+    var side = sides(style);
+    var fg = textColorFor(color);
+
+    $('widthOut').textContent = base;
+
+    // clear previous marker
+    var vp = $('viewport');
+    Array.prototype.slice.call(vp.querySelectorAll('.frame,.bar,.pill,.corner')).forEach(function (n) { n.remove(); });
+
+    // reserved space
+    var pad = { top:0, right:0, bottom:0, left:0 };
+    if (inset) {
+      ['top','right','bottom','left'].forEach(function (s) {
+        pad[s] = side[s] ? width : 0;
+        if (look.bar && s === barSide) pad[s] = Math.max(BAR_H, pad[s]);
+      });
+    }
+    var page = $('page');
+    page.style.padding = pad.top+'px '+pad.right+'px '+pad.bottom+'px '+pad.left+'px';
+
+    if (width > 0 && style === 'corners') {
+      [['tl','top','left'],['tr','top','right'],['bl','bottom','left'],['br','bottom','right']].forEach(function (c) {
+        var el = document.createElement('div');
+        el.className = 'corner';
+        el.style[c[1]] = '0'; el.style[c[2]] = '0';
+        el.style.borderColor = color;
+        el.style['border' + c[1][0].toUpperCase() + c[1].slice(1) + 'Width'] = width + 'px';
+        el.style['border' + c[2][0].toUpperCase() + c[2].slice(1) + 'Width'] = width + 'px';
+        vp.appendChild(el);
+      });
+    } else if (width > 0) {
+      var frame = document.createElement('div');
+      frame.className = 'frame';
+      frame.style.borderColor = color;
+      frame.style.borderWidth = ['top','right','bottom','left'].map(function (s) {
+        return (side[s] ? width : 0) + 'px';
+      }).join(' ');
+      vp.appendChild(frame);
+    }
+
+    if (look.bar) {
+      var bar = document.createElement('div');
+      bar.className = 'bar';
+      bar.style[barSide] = '0';
+      bar.style.background = color;
+      bar.style.color = fg;
+      bar.textContent = label + ' • ' + host + ' • ' + label;
+      vp.appendChild(bar);
+    } else if ($('showPill').checked) {
+      var pill = document.createElement('div');
+      pill.className = 'pill';
+      pill.style[corner.indexOf('bottom') === 0 ? 'bottom' : 'top'] = '10px';
+      pill.style[corner.indexOf('left') > -1 ? 'left' : 'right'] = '10px';
+      pill.style.background = color;
+      pill.style.color = fg;
+      pill.textContent = label;
+      vp.appendChild(pill);
+    }
+
+    // tab + toolbar
+    var prefix = ($('titleTemplate').value || '').replace(/\{label\}/g, label);
+    $('tabTitle').textContent = prefix + 'Bookings';
+    var favColor = $('replaceFavicon').checked ? color : '#9aa1ab';
+    $('fav').style.borderColor = favColor;
+    $('extIcon').style.borderColor = color;
+    $('extBadge').style.background = color;
+    $('extBadge').style.color = fg;
+    $('extBadge').textContent = label.replace(/[^a-z0-9]/gi, '').slice(0, 4).toUpperCase();
+    $('url').textContent = 'https://' + host + '/bookings';
+  }
+
+  function applyPreset(name) {
+    var p = PRESETS[name];
+    $('label').value = p.label;
+    $('color').value = p.color;
+    $('intensity').value = p.intensity;
+    host = p.host;
+    Array.prototype.slice.call(document.querySelectorAll('#presets button')).forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.preset === name));
+    });
+    render();
+  }
+
+  document.getElementById('presets').addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (btn) applyPreset(btn.dataset.preset);
+  });
+  ['label','color','intensity','frameStyle','frameWidth','barPosition','pillCorner',
+   'insetPage','showPill','replaceFavicon','titleTemplate'].forEach(function (id) {
+    $(id).addEventListener('input', render);
+    $(id).addEventListener('change', render);
+  });
+
+  applyPreset('production');
+})();
+</script>
+</body>
+</html>

@@ -16,6 +16,26 @@ chrome, Env Guard recolours the thing you are actually looking at:
 Everything — URLs, labels, colours, how loud each environment is — is configurable on the
 options page. Nothing is hard-coded in the content script.
 
+## What it looks like
+
+![The local, staging and production markers side by side](docs/preview.svg)
+
+Each rule picks its own colour and how loud it is: `subtle` is a corner pill, `normal` adds the
+frame, `loud` adds the bar along the bottom. The tab title and favicon change too, which is what
+you see while the tab sits in the background.
+
+### Try it
+
+[`docs/demo.html`](docs/demo.html) is a self-contained page that renders the same markers with
+every setting wired to a control — clone the repo and open it in a browser, no install needed:
+
+```sh
+open docs/demo.html      # macOS; xdg-open on Linux
+```
+
+To put it online for colleagues, turn on GitHub Pages for this repo (Settings → Pages → branch
+`main`, folder `/docs`) and it is served at `/demo.html`.
+
 ## Install
 
 1. `git clone` this repo.
@@ -140,18 +160,6 @@ that is the rule that actually matters.
 - Chrome does not inject content scripts into `chrome://` pages or the Web Store, so no marker
   appears there. The toolbar badge still works everywhere.
 - Single-page apps are handled: the URL is re-checked on route changes.
-
-## Files
-
-| File | Role |
-| --- | --- |
-| `manifest.json` | MV3 manifest |
-| `match.js` | Pattern matching, defaults, config loading (shared by all contexts) |
-| `content.js` | Draws the frame, bar, pill, title prefix and favicon |
-| `background.js` | Service worker; keeps the toolbar badge in sync |
-| `options.html` / `options.js` | Rule editor, import/export, URL tester |
-| `popup.html` / `popup.js` | Current-tab status, snooze, link to settings |
-| `icons/` | Toolbar and store icons (16/32/48/128) |
 
 ## Licence
 
