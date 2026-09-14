@@ -6,9 +6,9 @@ Chrome has no API for swapping the browser theme at runtime (`browser.theme` is 
 and a Chrome theme extension cannot contain any logic). So instead of recolouring the browser
 chrome, Env Guard recolours the thing you are actually looking at:
 
-- a coloured **frame** around the viewport
-- a **top bar** across the page (loud rules only)
-- a **corner pill** with the environment name
+- a coloured **frame** down the sides and across the bottom
+- a **bar** along the bottom of the page (loud rules only)
+- a **corner pill** with the environment name (rules without a bar)
 - a **tab title prefix**, e.g. `[PRODUCTION] Dashboard`
 - a **recoloured favicon**, so production stands out in a row of pinned tabs
 - a **toolbar badge** showing the matched environment
@@ -63,8 +63,9 @@ These apply to every rule:
 
 | Option | Effect |
 | --- | --- |
-| Frame | `all edges` draws a full border; `corners only` draws four corner brackets that cover far less of the page |
+| Frame | `all edges`, `sides and bottom` (leaves the top completely clear), or `corners only` |
 | Thickness | Frame width in pixels (default 4). `loud` rules draw it 1.5x thicker |
+| Bar | Which edge the `loud` bar sits on, top or bottom |
 | Reserve space for the frame | Pad the page so the frame sits beside your content instead of over it |
 | Corner pill | Show the environment name in a corner of the page |
 | Pill corner | Which corner it sits in |
@@ -72,15 +73,25 @@ These apply to every rule:
 | Tab title prefix | The prefix itself — see below |
 | Recolour the favicon | Replace the site's favicon with the rule colour |
 
-The frame is a `position: fixed` overlay, so by default it covers a few pixels along each edge
-of the page. Three ways to get that space back, in order of how much they change:
+The frame is a `position: fixed` overlay, so on its own it would cover a few pixels along each
+edge of the page. **Reserve space for the frame** is on by default: it pads `<html>` by exactly
+the width of the frame, so the marker sits beside your content rather than over it.
 
-1. **Lower the thickness** — 2px is still clearly visible.
-2. **Switch to `corners only`** — brackets in the four corners, nothing along the edges.
-3. **Turn on Reserve space for the frame** — pads `<html>` by exactly the frame width, so nothing
-   is covered at all. Two caveats: a site's own `position: fixed` header still uses the full
-   viewport and can slide under the frame, and pages sized with `100vh` may gain a small
-   scrollbar. Worth it on an app you stare at all day; leave it off for general browsing.
+### The top edge
+
+One case padding cannot solve: a site's own **fixed menu bar** is laid out against the viewport,
+not against `<html>`, so no amount of padding moves it down &mdash; it slides underneath anything
+drawn at the top of the screen. Nothing a content script can do changes that.
+
+So the defaults simply stay out of the top: the frame is `sides and bottom`, and the `loud` bar
+sits at the **bottom**. Your app's navigation is never covered. Switch either back if the page
+you care about has no fixed header.
+
+Two remaining caveats for reserve mode: pages sized with `100vh` may gain a small scrollbar, and
+a site's fixed elements on the other edges can still overlap the frame there.
+
+The corner pill is only drawn for rules **without** a bar &mdash; on a `loud` rule the bar already
+names the environment, so a pill would be a second copy sitting on your page for no reason.
 
 The **tab title prefix** is a template. `{label}` is replaced with the environment name, and
 a trailing space is kept as typed, so the default `[{label}] ` renders as `[PRODUCTION] Dashboard`.
