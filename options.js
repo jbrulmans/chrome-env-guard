@@ -85,6 +85,10 @@
     config.global.replaceFavicon = document.getElementById('replaceFavicon').checked;
     config.global.pillCorner = document.getElementById('pillCorner').value;
     config.global.titleTemplate = document.getElementById('titleTemplate').value;
+    config.global.frameStyle = document.getElementById('frameStyle').value;
+    config.global.insetPage = document.getElementById('insetPage').checked;
+    var width = parseInt(document.getElementById('frameWidth').value, 10);
+    config.global.frameWidth = isNaN(width) ? 4 : Math.min(Math.max(width, 0), 16);
   }
 
   function writeGlobals() {
@@ -92,6 +96,10 @@
     document.getElementById('prefixTitle').checked = config.global.prefixTitle !== false;
     document.getElementById('replaceFavicon').checked = config.global.replaceFavicon !== false;
     document.getElementById('pillCorner').value = config.global.pillCorner || 'top-right';
+    document.getElementById('frameStyle').value = config.global.frameStyle || 'edges';
+    document.getElementById('insetPage').checked = config.global.insetPage === true;
+    document.getElementById('frameWidth').value =
+      typeof config.global.frameWidth === 'number' ? config.global.frameWidth : 4;
     var tpl = config.global.titleTemplate;
     document.getElementById('titleTemplate').value = tpl === undefined || tpl === null ? '[{label}] ' : tpl;
   }

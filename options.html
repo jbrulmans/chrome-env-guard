@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Env Guard settings</title>
+<title>Environment Guard settings</title>
 <style>
   :root {
     color-scheme: light dark;
@@ -74,6 +74,22 @@
         </select>
       </label>
     </div>
+    <div class="row" style="margin-top:14px">
+      <label class="check">Frame
+        <select id="frameStyle" style="width:auto">
+          <option value="edges">all edges</option>
+          <option value="corners">corners only</option>
+        </select>
+      </label>
+      <label class="check">Thickness
+        <input type="number" id="frameWidth" min="0" max="16" step="1" style="width:70px">
+        px
+      </label>
+      <label class="check"><input type="checkbox" id="insetPage"> Reserve space for the frame</label>
+    </div>
+    <p class="hint"><strong>Reserve space</strong> pads the page by the width of the frame, so the marker
+      sits beside your content instead of on top of it. A site's own fixed headers can still slide under
+      the frame, and pages built on <code>100vh</code> may gain a small scrollbar.</p>
     <p class="hint">Tab title prefix &mdash; <code>{label}</code> is replaced with the environment name,
       and any trailing space is kept. Leave empty for no prefix.</p>
     <input type="text" id="titleTemplate" placeholder="[{label}] ">
