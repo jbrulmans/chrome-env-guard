@@ -9,7 +9,7 @@
       showPill: true,
       pillCorner: 'top-right',
       frameWidth: 4,
-      frameStyle: 'open-top',
+      frameStyle: 'edges',
       barPosition: 'bottom',
       insetPage: true,
       prefixTitle: true,
