@@ -84,6 +84,7 @@
     config.global.prefixTitle = document.getElementById('prefixTitle').checked;
     config.global.replaceFavicon = document.getElementById('replaceFavicon').checked;
     config.global.pillCorner = document.getElementById('pillCorner').value;
+    config.global.titleTemplate = document.getElementById('titleTemplate').value;
   }
 
   function writeGlobals() {
@@ -91,6 +92,8 @@
     document.getElementById('prefixTitle').checked = config.global.prefixTitle !== false;
     document.getElementById('replaceFavicon').checked = config.global.replaceFavicon !== false;
     document.getElementById('pillCorner').value = config.global.pillCorner || 'top-right';
+    var tpl = config.global.titleTemplate;
+    document.getElementById('titleTemplate').value = tpl === undefined || tpl === null ? '[{label}] ' : tpl;
   }
 
   function runTest() {
