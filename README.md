@@ -57,6 +57,31 @@ Patterns are matched against the full URL, so you can scope a rule to a path
 Use **Test a URL** at the bottom of the options page to check which rule a URL hits before
 you save.
 
+### Display options
+
+These apply to every rule:
+
+| Option | Effect |
+| --- | --- |
+| Corner pill | Show the environment name in a corner of the page |
+| Pill corner | Which corner it sits in |
+| Prefix the tab title | Turn the title prefix on or off |
+| Tab title prefix | The prefix itself — see below |
+| Recolour the favicon | Replace the site's favicon with the rule colour |
+
+The **tab title prefix** is a template. `{label}` is replaced with the environment name, and
+a trailing space is kept as typed, so the default `[{label}] ` renders as `[PRODUCTION] Dashboard`.
+Other things that work:
+
+| Template | Tab title becomes |
+| --- | --- |
+| `[{label}] ` | `[PRODUCTION] Dashboard` |
+| `🔴 ` | `🔴 Dashboard` |
+| `{label} — ` | `PRODUCTION — Dashboard` |
+| *(empty)* | `Dashboard` — no prefix |
+
+Changing the template rewrites the prefix on open tabs rather than stacking a second one.
+
 ### Sharing config across a team
 
 **Export JSON** writes the whole config to a file; **Import JSON** loads one back. Commit the
