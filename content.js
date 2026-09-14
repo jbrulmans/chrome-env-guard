@@ -39,9 +39,31 @@
     return Math.round(base * look.scale);
   }
 
-  function ready(fn) {
-    if (document.documentElement) return fn();
-    document.addEventListener('DOMContentLoaded', fn, { once: true });
+  /* The overlay has to land inside <body>. At document_start <html> exists but
+     <body> does not, and a node parked on <html> is lost once the page builds
+     its DOM - which is why the marker could go missing while the reserved
+     space, a separate <style> on <html>, stayed put. */
+  function whenBodyReady(fn) {
+    if (document.body) return fn();
+
+    var done = false;
+    function run() {
+      if (done || !document.body) return;
+      done = true;
+      observer.disconnect();
+      fn();
+    }
+
+    var observer = new MutationObserver(run);
+    observer.observe(document, { childList: true, subtree: true });
+
+    /* A document with no <body> at all (XML, SVG) never needs the overlay -
+       stop observing rather than watching the whole tree forever. */
+    document.addEventListener('DOMContentLoaded', function () {
+      if (document.body) return run();
+      done = true;
+      observer.disconnect();
+    });
   }
 
   function removeUi() {
@@ -172,7 +194,7 @@
       node.id = INSET_ID;
     }
     if (node.textContent !== css) node.textContent = css;
-    if (!node.isConnected) document.documentElement.appendChild(node);
+    if (!node.isConnected && document.documentElement) document.documentElement.appendChild(node);
   }
 
   function titlePrefix() {
@@ -287,7 +309,8 @@
 
   function apply() {
     state.rule = self.EnvGuard.findRule(state.config, location.href);
-    ready(function () {
+    applyInset();
+    whenBodyReady(function () {
       render();
       applyInset();
       applyTitle();
@@ -295,17 +318,40 @@
     });
   }
 
+  /* Frameworks replace large parts of the document as they hydrate and can take
+     our nodes with them, so re-attach anything that went missing. */
+  function ensureAttached() {
+    if (!state.config || !state.rule || state.snoozed || !document.body) return;
+
+    if (!document.getElementById(HOST_ID)) render();
+    applyInset();
+
+    var g = state.config.global;
+    if (g.replaceFavicon !== false && (!state.ownFavicon || !state.ownFavicon.isConnected)) {
+      applyFavicon();
+    }
+    if (g.prefixTitle !== false) {
+      var prefix = titlePrefix();
+      if (prefix && document.title.indexOf(prefix) !== 0) applyTitle();
+    }
+  }
+
   /* SPAs swap routes without a reload; re-evaluate when the URL changes. */
   function watchUrl() {
     setInterval(function () {
-      if (location.href === state.url) return;
-      state.url = location.href;
-      state.snoozed = false;
-      apply();
+      if (location.href !== state.url) {
+        state.url = location.href;
+        state.snoozed = false;
+        apply();
+        return;
+      }
+      ensureAttached();
     }, 800);
     window.addEventListener('popstate', function () {
       setTimeout(apply, 0);
     });
+    document.addEventListener('DOMContentLoaded', ensureAttached);
+    window.addEventListener('load', ensureAttached);
   }
 
   chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
