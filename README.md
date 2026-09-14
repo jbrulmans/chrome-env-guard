@@ -114,6 +114,10 @@ repo is the shipped default.
 
 Settings live in `chrome.storage.sync`, so they follow your Chrome profile across machines.
 
+If your environment URLs are internal, keep the export out of the repo: anything matching
+`*.local.json` is gitignored, so `my-company.local.json` stays on your machine and can be handed
+to colleagues directly.
+
 ## Defaults
 
 The shipped rules are placeholders — **edit the production one to your own URL first**,
