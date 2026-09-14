@@ -1,4 +1,4 @@
-# Env Guard
+# Environment Guard
 
 A Chrome extension that makes it obvious when a tab is pointed at **production**.
 
@@ -63,11 +63,24 @@ These apply to every rule:
 
 | Option | Effect |
 | --- | --- |
+| Frame | `all edges` draws a full border; `corners only` draws four corner brackets that cover far less of the page |
+| Thickness | Frame width in pixels (default 4). `loud` rules draw it 1.5x thicker |
+| Reserve space for the frame | Pad the page so the frame sits beside your content instead of over it |
 | Corner pill | Show the environment name in a corner of the page |
 | Pill corner | Which corner it sits in |
 | Prefix the tab title | Turn the title prefix on or off |
 | Tab title prefix | The prefix itself — see below |
 | Recolour the favicon | Replace the site's favicon with the rule colour |
+
+The frame is a `position: fixed` overlay, so by default it covers a few pixels along each edge
+of the page. Three ways to get that space back, in order of how much they change:
+
+1. **Lower the thickness** — 2px is still clearly visible.
+2. **Switch to `corners only`** — brackets in the four corners, nothing along the edges.
+3. **Turn on Reserve space for the frame** — pads `<html>` by exactly the frame width, so nothing
+   is covered at all. Two caveats: a site's own `position: fixed` header still uses the full
+   viewport and can slide under the frame, and pages sized with `100vh` may gain a small
+   scrollbar. Worth it on an app you stare at all day; leave it off for general browsing.
 
 The **tab title prefix** is a template. `{label}` is replaced with the environment name, and
 a trailing space is kept as typed, so the default `[{label}] ` renders as `[PRODUCTION] Dashboard`.
