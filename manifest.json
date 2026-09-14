@@ -3,22 +3,44 @@
   "name": "Env Guard",
   "version": "1.0.0",
   "description": "Paints an unmissable colour frame on the page when you are on production (or staging, or local), so you never mistake it for a safe environment.",
-  "permissions": ["storage", "tabs"],
-  "host_permissions": ["<all_urls>"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["match.js", "content.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "match.js",
+        "content.js"
+      ],
       "run_at": "document_start",
       "all_frames": false
     }
   ],
   "action": {
     "default_title": "Env Guard",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
   },
   "options_ui": {
     "page": "options.html",
